@@ -2,7 +2,7 @@
 
 ## Setup
 
-Before working do:
+Before working, fork and clone this repo and then do:
 
 ```shell
 npm install
