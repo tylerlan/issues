@@ -60,7 +60,7 @@ class Issues {
   // property for each issue with a `pull_request` property that is not `null`
   get withPullRequest() {
 
-    let issuesWithPullRequest = this.issues.filter((issue) => issue.pull_request !== null);
+    let issuesWithPullRequest = this.issues.filter((issue) => issue.hasOwnProperty('pull_request')); // Need to use hasOwnProperty because in some cases pull_question ISN'T THERE AT ALL, rather than being === null.
 
     return issuesWithPullRequest.map( (issue) => issue.id );
 
@@ -69,11 +69,28 @@ class Issues {
   // return the total number of comments for all the issues, based on the
   // `comments` property
   get totalComments() {
+    let arrayOfCommentsNumber = this.issues.map( issue => issue.comments );
+
+    return arrayOfCommentsNumber.reduce( (total, num) => total + num );
   }
 
   // Return the `login` property of the `user` property for the `user` that has
   // submitted the most issues
   get mostActiveUser() {
+    let userIssuesObj = {};
+    // create an object to store user logins and the number of issues for which they are the user
+    this.issues.forEach ( (issue) => {
+      if (userIssuesObj[issue.user.login] === undefined) {
+          userIssuesObj[issue.user.login] = 0;
+      } else {
+          userIssuesObj[issue.user.login]++;
+      }
+    })
+    // loop through the object and return the key (the USER) with the highest value (most issues)
+    return Object.keys(userIssuesObj).reduce( (a, b) => {
+      return userIssuesObj[a] > userIssuesObj[b] ? a : b;
+    } )
+
   }
 }
 
